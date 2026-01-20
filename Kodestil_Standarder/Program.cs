@@ -17,7 +17,11 @@ class Program
         string word = "Hello!";
         bool check = true;
 
-        var someValue = 1;
+        var someValue = 1; //0001
+        var someOtherValue = 2;//0010
+
+        var either = someValue | someOtherValue;
+        Console.WriteLine(either); //0011
         someValue = 10;
 
         var studentGradesTable = new Dictionary<string, List<int>>()
@@ -48,12 +52,14 @@ class Program
 
         var person = new Person
         {
-            Name = "John",
             Age = 33
         };
         var verified = person.VerifyId(20);
+
+        var name = person.Name ?? "Default Name";
     }
 }
+
 
 
 public class PersonWithBackingFields
