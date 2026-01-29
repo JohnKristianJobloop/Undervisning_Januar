@@ -2,7 +2,7 @@ using System;
 
 namespace src.Interfaces;
 
-public interface ILFU_Cache<TKey, TValue> where TKey : IEquatable<TKey> 
+public interface ILFUCache<TKey, TValue> where TKey : IEquatable<TKey> 
 {
     TValue? Get(TKey key);
 

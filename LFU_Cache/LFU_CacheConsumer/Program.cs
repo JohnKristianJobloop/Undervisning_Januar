@@ -25,7 +25,7 @@ while (true)
 
     if (cacheHit == 0)
     {
-        var result = FileScanner<int>.Find("WordFrequencyList.txt", word);
+        var result = FileScanner<int>.Find(AppContext.BaseDirectory, "WordFrequencyList.txt", word);
 
         if (result == 0)
         {

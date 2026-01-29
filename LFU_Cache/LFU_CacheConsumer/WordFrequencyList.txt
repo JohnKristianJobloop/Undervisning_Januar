@@ -943,7 +943,6 @@ ground,59
 support,58
 pillar,57
 core,56
-center,55
 heart,54
 essence,53
 nature,52

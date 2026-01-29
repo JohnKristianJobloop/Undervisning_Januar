@@ -3,7 +3,7 @@ using src.Interfaces;
 
 namespace src.Models;
 
-public class LFUCache<TKey, TValue>(int cacheSize): ILFU_Cache<TKey,TValue> where TKey : IEquatable<TKey>
+public class LFUCache<TKey, TValue>(int cacheSize): ILFUCache<TKey,TValue> where TKey : IEquatable<TKey>
 {
     //Vi trenger et dictionary, som skal holde en nøkkel, og returnere en node fra linked list.
 
