@@ -11,21 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 
-builder.Services.AddTransient<DependencyInversionPrinciple>();
-
-
-
-
-builder.Services.AddScoped<DataHandler>();
-
-
-
-
-builder.Services.AddKeyedSingleton<IDatabase, SQLDatabase>("SQL");
-
-builder.Services.AddKeyedSingleton<IDatabase, ExcelDatabase>("Excel");
-
-builder.Services.AddKeyedSingleton<IDatabase, SupabaseDatabase>("Supabase");
 
 
 
@@ -56,12 +41,18 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.MapStaticAssets();
+
+app.UseStaticFiles();
+
+app.MapFallbackToFile("index.html");
+
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", (DataHandler principle) =>
+app.MapGet("/weatherforecast"/*Dette representerer RAWURL på den innkommende requesten.*/, () =>
 {
     //DataHandler starter å eksistere når dette scopet blir kallet (ca her?)
     var forecast =  Enumerable.Range(1, 5).Select(index =>
@@ -77,13 +68,6 @@ app.MapGet("/weatherforecast", (DataHandler principle) =>
 })
 .WithName("GetWeatherForecast");
 
-
-app.MapGet("fetchData", ([FromKeyedServices("SQL")] IDatabase database) =>
-{
-    database.SaveOrder(new Order(1, "to@hello.com"));
-});
-
-app.MapGet("excelOrder", ([FromKeyedServices("Excel")] IDatabase database) => {});
 
 app.Run();
 
