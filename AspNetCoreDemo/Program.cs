@@ -1,6 +1,8 @@
 
 
+using AspNetCoreDemo.Extensions;
 using AspNetCoreDemo.Models;
+using AspNetCoreDemo.Services;
 using Microsoft.AspNetCore.Mvc;
 using Scalar.AspNetCore;
 
@@ -9,8 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-
-builder.Services.AddSingleton<IEnumerable<DadJoke>>(_ => DadJokeSeedData.GenerateDadJokes());
+builder.Services.AddDadJokeService();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -22,6 +24,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapControllers();
 
 var summaries = new[]
 {
