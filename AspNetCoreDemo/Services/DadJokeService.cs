@@ -1,18 +1,25 @@
 using System;
-using AspNetCoreDemo.Models;
+using AspNetCoreDemo.Models.Context;
+using AspNetCoreDemo.Models.DTO;
+using AspNetCoreDemo.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspNetCoreDemo.Services;
 
-public class DadJokeService(List<DadJoke> jokes)
+public class DadJokeService(DadJokeDbContext jokesDb)
 {
+    public async Task<List<DadJokeResponseDTO>> GetAll() => await jokesDb.DadJokes.Select(joke => new DadJokeResponseDTO(joke.Id, joke.Joke)).ToListAsync();
 
-    public IEnumerable<DadJoke> GetAll() => jokes;
-
-    public DadJoke Add(DadJoke joke)
+    public async Task<DadJokeResponseDTO> Add(DadJokeRequestDTO joke)
     {
-        jokes.Add(joke); 
-        return joke;
+        var newJoke = new DadJokeEntity{Joke = joke.DadJoke};
+        await jokesDb.DadJokes.AddAsync(newJoke);
+        await jokesDb.SaveChangesAsync();
+        return new DadJokeResponseDTO(newJoke.Id, newJoke.Joke);
     }
 
-    public DadJoke? Get(string id) => jokes.FirstOrDefault(joke => string.Equals(joke.Id, id));
+    public async Task<DadJokeResponseDTO?> Get(int id) => await jokesDb.DadJokes
+                                                                        .Where(joke => joke.Id == id)
+                                                                        .Select(joke => new DadJokeResponseDTO(joke.Id, joke.Joke))
+                                                                        .FirstOrDefaultAsync();
 }

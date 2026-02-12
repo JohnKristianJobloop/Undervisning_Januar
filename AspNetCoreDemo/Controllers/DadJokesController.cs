@@ -1,7 +1,8 @@
-using System.Reflection.Metadata.Ecma335;
 using AspNetCoreDemo.Models;
+using AspNetCoreDemo.Models.DTO;
 using AspNetCoreDemo.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AspNetCoreDemo.Controllers;
@@ -19,14 +20,14 @@ public class DadJokesController(DadJokeService service) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<List<DadJoke>> GetAsync() => [.. await Task.Run(()=>service.GetAll())];
+    public async Task<List<DadJokeResponseDTO>> GetAsync() => await service.GetAll();
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> Post([FromBody] DadJoke joke) => Created($"api/DadJokes/{joke.Id}", await Task.Run(()=>service.Add(joke)));
+    public async Task<IActionResult> Post([FromBody] DadJokeRequestDTO joke) => await service.Add(joke) is DadJokeResponseDTO newJoke ? Created($"api/dadjokes/{newJoke.Id}", newJoke) : StatusCode(500, new { message= "Something went very wrong"});
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAsync(string id) => await Task.Run(()=>service.Get(id)) is DadJoke joke ? Ok(joke) : NotFound();
+    public async Task<IActionResult> GetAsync(int id) => await service.Get(id) is DadJokeResponseDTO joke ? Ok(joke) : NotFound();
 }
